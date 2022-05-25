@@ -1,0 +1,20 @@
+.contractRoot {
+
+}
+
+.functionRoot {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
