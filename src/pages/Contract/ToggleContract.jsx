@@ -28,7 +28,7 @@ export function ToggleContract() {
 
   async function fetchData() {
     const data = await axios
-      .get(`http://localhost:3001/api/collections/${address}`)
+      .get(`http://45.76.222.210:3001/api/collections/${address}`)
       .then(function (response) {
         return response.data;
       });
@@ -69,7 +69,7 @@ export function ToggleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input=>input.value);
     }
     const data = await axios
-      .get(`http://localhost:3001/api/collections/${address}/call`, {
+      .get(`http://45.76.222.210:3001/api/collections/${address}/call`, {
         params: {
           method: method,
           args: values,
@@ -97,7 +97,7 @@ export function ToggleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input=>input.value);
     }
     axios
-      .get(`http://localhost:3001/api/collections/${address}/send`, {
+      .get(`http://45.76.222.210:3001/api/collections/${address}/send`, {
         params: {
           method: method,
           args: values,
@@ -111,7 +111,7 @@ export function ToggleContract() {
 
   const saveMint = async (values) => {
     axios
-      .put(`http://localhost:3001/api/collections/${address}`, {
+      .put(`http://45.76.222.210:3001/api/collections/${address}`, {
         mintConfig: values})
       .then(function (response) {
         console.log('response', response)
@@ -121,7 +121,7 @@ export function ToggleContract() {
 
   const test = async () => {
     axios
-      .put(`http://localhost:3001/api/collections/${address}/toggleTest`)
+      .put(`http://45.76.222.210:3001/api/collections/${address}/toggleTest`)
       .then(function (response) {
         console.log('response', response)
         return response.data;

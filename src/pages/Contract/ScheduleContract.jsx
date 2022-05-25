@@ -30,7 +30,7 @@ export function SchduleContract() {
 
   async function fetchData() {
     const data = await axios
-      .get(`http://localhost:3001/api/collections/${address}`)
+      .get(`http://45.76.222.210:3001/api/collections/${address}`)
       .then(function (response) {
         return response.data;
       });
@@ -72,7 +72,7 @@ export function SchduleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input => input.value);
     }
     const data = await axios
-      .get(`http://localhost:3001/api/collections/${address}/call`, {
+      .get(`http://45.76.222.210:3001/api/collections/${address}/call`, {
         params: {
           method: method,
           args: values,
@@ -100,7 +100,7 @@ export function SchduleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input => input.value);
     }
     axios
-      .get(`http://localhost:3001/api/collections/${address}/send`, {
+      .get(`http://45.76.222.210:3001/api/collections/${address}/send`, {
         params: {
           method: method,
           args: values,
@@ -114,7 +114,7 @@ export function SchduleContract() {
 
   const saveMint = async (values) => {
     axios
-      .put(`http://localhost:3001/api/collections/${address}`, {
+      .put(`http://45.76.222.210:3001/api/collections/${address}`, {
         mintConfig: values
       })
       .then(function (response) {
@@ -125,7 +125,7 @@ export function SchduleContract() {
 
   const test = async () => {
     axios
-      .put(`http://localhost:3001/api/collections/${address}/scheduleTest`)
+      .put(`http://45.76.222.210:3001/api/collections/${address}/scheduleTest`)
       .then(function (response) {
         console.log('response', response)
         return response.data;
@@ -159,7 +159,7 @@ export function SchduleContract() {
     const code = parseSourceCodeObject(collection.sourceCode, 'eth');
     console.log('ccccccccc', code, values)
     axios
-      .post(`http://localhost:3001/api/collections/${address}/deploy`, values)
+      .post(`http://45.76.222.210:3001/api/collections/${address}/deploy`, values)
       .then(function (response) {
         console.log('response', response)
         return response.data;

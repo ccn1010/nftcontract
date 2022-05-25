@@ -41,23 +41,23 @@ const columns = [
   },
 ];
 
-const socket = io('http://localhost:80');
+// const socket = io('http://localhost:80');
 
-socket.on('connect', function() {
-    console.log('Connected');
-});
+// socket.on('connect', function() {
+//     console.log('Connected');
+// });
 
 export function ContractList() {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [address, setAdress] = useState();
-  socket.on('backtest', (...args)=>{
-    console.log('aaa', args)
-  });
+  // socket.on('backtest', (...args)=>{
+  //   console.log('aaa', args)
+  // });
 
   async function fetchData() {
     const data = await axios
-      .get("http://localhost:3001/api/collections")
+      .get("http://45.76.222.210:3001/api/collections")
       .then(function (response) {
         // handle success
         return response.data;
@@ -74,7 +74,7 @@ export function ContractList() {
   const onFinish = async (values) => {
     console.log('Success:', values);
     await axios
-        .post("http://localhost:3001/api/collections", values)
+        .post("http://45.76.222.210:3001/api/collections", values)
         .then(function (response) {
           // handle success
           return response.data;
