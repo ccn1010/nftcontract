@@ -21,11 +21,11 @@ const mintTypes = {
 
 
 
-// const socket = io('http://localhost:80');
+const socket = io(process.env.REACT_APP_WEBSOCKET_SERVER_URL, {transports: ['websocket']});
 
-// socket.on('connect', function() {
-//     console.log('Connected');
-// });
+socket.on('connect', function() {
+    console.log('Connected');
+});
 
 export function ContractList() {
   const [form] = Form.useForm();
@@ -38,7 +38,7 @@ export function ContractList() {
   const remove = (address) => async (ev)=>{
     ev.preventDefault();
     await axios
-      .delete(`http://localhost:3001/api/collections/${address}`)
+      .delete(`${process.env.REACT_APP_API_URL}/collections/${address}`)
       .then(function (response) {
         // handle success
         return response.data;
@@ -78,7 +78,7 @@ export function ContractList() {
 
   async function fetchData() {
     const data = await axios
-      .get("http://localhost:3001/api/collections")
+      .get(`${process.env.REACT_APP_API_URL}/collections`)
       .then(function (response) {
         // handle success
         return response.data;
@@ -95,7 +95,7 @@ export function ContractList() {
   const onFinish = async (values) => {
     console.log('Success:', values);
     await axios
-        .post("http://localhost:3001/api/collections", values)
+        .post(`${process.env.REACT_APP_API_URL}/collections`, values)
         .then(function (response) {
           // handle success
           return response.data;

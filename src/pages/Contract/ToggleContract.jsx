@@ -9,7 +9,7 @@ import styles from './contract.module.css';
 
 const { Option } = Select;
 
-const socket = io('http://localhost:80');
+const socket = io(process.env.REACT_APP_WEBSOCKET_SERVER_URL, {transports: ['websocket']});
 
 socket.on('connect', function () {
   console.log('Connected');
@@ -30,7 +30,7 @@ export function ToggleContract() {
 
   async function fetchData() {
     const data = await axios
-      .get(`http://localhost:3001/api/collections/${address}`)
+      .get(`${process.env.REACT_APP_API_URL}/collections/${address}`)
       .then(function (response) {
         return response.data;
       });
@@ -74,7 +74,7 @@ export function ToggleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input=>input.value);
     }
     const data = await axios
-      .get(`http://localhost:3001/api/collections/${address}/call`, {
+      .get(`${process.env.REACT_APP_API_URL}/collections/${address}/call`, {
         params: {
           method: method,
           args: values,
@@ -102,7 +102,7 @@ export function ToggleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input=>input.value);
     }
     axios
-      .get(`http://localhost:3001/api/collections/${address}/send`, {
+      .get(`${process.env.REACT_APP_API_URL}/collections/${address}/send`, {
         params: {
           method: method,
           args: values,
@@ -116,7 +116,7 @@ export function ToggleContract() {
 
   const saveMint = async (values) => {
     axios
-      .put(`http://localhost:3001/api/collections/${address}`, {
+      .put(`${process.env.REACT_APP_API_URL}/collections/${address}`, {
         mintConfig: values})
       .then(function (response) {
         console.log('response', response)
@@ -126,7 +126,7 @@ export function ToggleContract() {
 
   const test = async () => {
     axios
-      .put(`http://localhost:3001/api/collections/${address}/toggleTest`)
+      .put(`${process.env.REACT_APP_API_URL}/collections/${address}/toggleTest`)
       .then(function (response) {
         console.log('response', response)
         return response.data;
@@ -135,7 +135,7 @@ export function ToggleContract() {
 
   const deploy = (values) => {
     axios
-      .post(`http://localhost:3001/api/collections/${address}/deploy`, values)
+      .post(`${process.env.REACT_APP_API_URL}/collections/${address}/deploy`, values)
       .then(function (response) {
         console.log('response', response)
         return response.data;
