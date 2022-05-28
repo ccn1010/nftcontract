@@ -1,9 +1,8 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
-import { Form, Input, Button, Select, Card } from 'antd';
+import { Form, Input, Button, Select, Card, Cascader } from 'antd';
 import { Routes, Route, useParams } from 'react-router-dom';
-import { parseSourceCodeObject } from './util.ts';
 import styles from './contract.module.css';
 // import useFetch from 'use-http';
 // import styles from './Backtest.module.scss';
@@ -27,10 +26,11 @@ export function SchduleContract() {
   const [writeFnList, setWriteFnList] = useState([]);
   const [ropstenReadResult, setRopstenReadResult] = useState([]);
   const [collection, setCollection] = useState(null);
+  const [contractPathOption, setContractPathOption] = useState([]);
 
   async function fetchData() {
     const data = await axios
-      .get(`http://45.76.222.210:3001/api/collections/${address}`)
+      .get(`http://localhost:3001/api/collections/${address}`)
       .then(function (response) {
         return response.data;
       });
@@ -53,6 +53,8 @@ export function SchduleContract() {
     setReadFnList(readFns);
     setWriteFnList(writeFns);
     form.setFieldsValue(data.collection.mintConfig);
+
+    setContractPathOption(data.collection.contractPathList);
   }
 
   useEffect(() => {
@@ -72,7 +74,7 @@ export function SchduleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input => input.value);
     }
     const data = await axios
-      .get(`http://45.76.222.210:3001/api/collections/${address}/call`, {
+      .get(`http://localhost:3001/api/collections/${address}/call`, {
         params: {
           method: method,
           args: values,
@@ -100,7 +102,7 @@ export function SchduleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input => input.value);
     }
     axios
-      .get(`http://45.76.222.210:3001/api/collections/${address}/send`, {
+      .get(`http://localhost:3001/api/collections/${address}/send`, {
         params: {
           method: method,
           args: values,
@@ -114,7 +116,7 @@ export function SchduleContract() {
 
   const saveMint = async (values) => {
     axios
-      .put(`http://45.76.222.210:3001/api/collections/${address}`, {
+      .put(`http://localhost:3001/api/collections/${address}`, {
         mintConfig: values
       })
       .then(function (response) {
@@ -125,7 +127,7 @@ export function SchduleContract() {
 
   const test = async () => {
     axios
-      .put(`http://45.76.222.210:3001/api/collections/${address}/scheduleTest`)
+      .put(`http://localhost:3001/api/collections/${address}/scheduleTest`)
       .then(function (response) {
         console.log('response', response)
         return response.data;
@@ -156,10 +158,8 @@ export function SchduleContract() {
   }
 
   const deploy = (values) => {
-    const code = parseSourceCodeObject(collection.sourceCode, 'eth');
-    console.log('ccccccccc', code, values)
     axios
-      .post(`http://45.76.222.210:3001/api/collections/${address}/deploy`, values)
+      .post(`http://localhost:3001/api/collections/${address}/deploy`, values)
       .then(function (response) {
         console.log('response', response)
         return response.data;
@@ -260,10 +260,7 @@ export function SchduleContract() {
                 name="contractPath"
                 rules={[{ required: true, message: 'Please input your contractPath!' }]}
               >
-                <Select style={{ width: 120 }}>
-                  <Option value="schedule">定时</Option>
-                  <Option value="toggle">开关</Option>
-                </Select>
+                <Cascader options={contractPathOption} placeholder="Please select" />
               </Form.Item>
               <Form.Item>
                 <Button type="primary"

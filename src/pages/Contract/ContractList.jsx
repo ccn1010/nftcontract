@@ -19,27 +19,7 @@ const mintTypes = {
   },
 }
 
-const columns = [
-  {
-    title: 'Contract',
-    dataIndex: 'contractName',
-    key: 'contractName',
-    render: (text, record) => <a target="_blank" href={`/${mintTypes[record.mintType].path}/${record.contractAddress}`} rel="noreferrer">{text}</a>,
-  },
-  {
-    title: 'mintType',
-    dataIndex: 'mintType',
-    key: 'mintType',
-    render: (text, record) => mintTypes[text].label,
-  },
-  {
-    title: 'createdAt',
-    key: 'createdAt',
-    render: (text) => (
-      moment(text).format('YYYY-MM-DD HH:mm:ss')
-    ),
-  },
-];
+
 
 // const socket = io('http://localhost:80');
 
@@ -55,9 +35,50 @@ export function ContractList() {
   //   console.log('aaa', args)
   // });
 
+  const remove = (address) => async (ev)=>{
+    ev.preventDefault();
+    await axios
+      .delete(`http://localhost:3001/api/collections/${address}`)
+      .then(function (response) {
+        // handle success
+        return response.data;
+      });
+    fetchData();
+  }
+
+  const columns = [
+    {
+      title: 'Contract',
+      dataIndex: 'contractName',
+      key: 'contractName',
+      render: (text, record) => <a target="_blank" href={`/${mintTypes[record.mintType].path}/${record.contractAddress}`} rel="noreferrer">{text}</a>,
+    },
+    {
+      title: 'mintType',
+      dataIndex: 'mintType',
+      key: 'mintType',
+      render: (text, record) => mintTypes[text].label,
+    },
+    {
+      title: 'createdAt',
+      key: 'createdAt',
+      render: (text) => (
+        moment(text).format('YYYY-MM-DD HH:mm:ss')
+      ),
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      key: 'action',
+      render: (_, record) => (
+        <a onClick={remove(record.contractAddress)}>删除</a>
+      ),
+    },
+  ];
+
   async function fetchData() {
     const data = await axios
-      .get("http://45.76.222.210:3001/api/collections")
+      .get("http://localhost:3001/api/collections")
       .then(function (response) {
         // handle success
         return response.data;
@@ -74,7 +95,7 @@ export function ContractList() {
   const onFinish = async (values) => {
     console.log('Success:', values);
     await axios
-        .post("http://45.76.222.210:3001/api/collections", values)
+        .post("http://localhost:3001/api/collections", values)
         .then(function (response) {
           // handle success
           return response.data;

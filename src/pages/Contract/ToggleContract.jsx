@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
-import { Form, Input, Button, Select, Card } from 'antd';
+import { Form, Input, Button, Select, Card,Cascader } from 'antd';
 import { Routes, Route, useParams } from 'react-router-dom';
 import styles from './contract.module.css';
 // import useFetch from 'use-http';
@@ -25,13 +25,16 @@ export function ToggleContract() {
   const [readFnList, setReadFnList] = useState([]);
   const [writeFnList, setWriteFnList] = useState([]);
   const [ropstenReadResult, setRopstenReadResult] = useState([]);
+  const [collection, setCollection] = useState(null);
+  const [contractPathOption, setContractPathOption] = useState([]);
 
   async function fetchData() {
     const data = await axios
-      .get(`http://45.76.222.210:3001/api/collections/${address}`)
+      .get(`http://localhost:3001/api/collections/${address}`)
       .then(function (response) {
         return response.data;
       });
+    setCollection(data.collection);
 
     const abi = JSON.parse(data.collection.abi);
     const readFns = [];
@@ -50,6 +53,8 @@ export function ToggleContract() {
     setReadFnList(readFns);
     setWriteFnList(writeFns);
     form.setFieldsValue(data.collection.mintConfig);
+
+    setContractPathOption(data.collection.contractPathList);
   }
 
   useEffect(() => {
@@ -69,7 +74,7 @@ export function ToggleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input=>input.value);
     }
     const data = await axios
-      .get(`http://45.76.222.210:3001/api/collections/${address}/call`, {
+      .get(`http://localhost:3001/api/collections/${address}/call`, {
         params: {
           method: method,
           args: values,
@@ -97,7 +102,7 @@ export function ToggleContract() {
       values = Array.from(fields.length > 0 ? fields : [fields]).map(input=>input.value);
     }
     axios
-      .get(`http://45.76.222.210:3001/api/collections/${address}/send`, {
+      .get(`http://localhost:3001/api/collections/${address}/send`, {
         params: {
           method: method,
           args: values,
@@ -111,7 +116,7 @@ export function ToggleContract() {
 
   const saveMint = async (values) => {
     axios
-      .put(`http://45.76.222.210:3001/api/collections/${address}`, {
+      .put(`http://localhost:3001/api/collections/${address}`, {
         mintConfig: values})
       .then(function (response) {
         console.log('response', response)
@@ -121,7 +126,16 @@ export function ToggleContract() {
 
   const test = async () => {
     axios
-      .put(`http://45.76.222.210:3001/api/collections/${address}/toggleTest`)
+      .put(`http://localhost:3001/api/collections/${address}/toggleTest`)
+      .then(function (response) {
+        console.log('response', response)
+        return response.data;
+      });
+  }
+
+  const deploy = (values) => {
+    axios
+      .post(`http://localhost:3001/api/collections/${address}/deploy`, values)
       .then(function (response) {
         console.log('response', response)
         return response.data;
@@ -287,6 +301,22 @@ export function ToggleContract() {
             </Button>
           </Form.Item>
         </Form>
+
+        <div>
+          {(collection && !collection.ropstenContractAddress) &&
+            <Form onFinish={deploy}>
+              <Form.Item
+                name="contractPath"
+                rules={[{ required: true, message: 'Please input your contractPath!' }]}
+              >
+                <Cascader options={contractPathOption} placeholder="Please select" />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary"
+                  htmlType="submit">部署</Button>
+              </Form.Item>
+            </Form>}
+        </div>
 
         <div className={styles.contractRoot}>
         <div className={styles.flex}>
