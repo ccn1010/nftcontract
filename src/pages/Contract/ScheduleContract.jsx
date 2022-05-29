@@ -134,6 +134,15 @@ export function SchduleContract() {
       });
   }
 
+  const boot = async () => {
+    axios
+      .put(`${process.env.REACT_APP_API_URL}/collections/${address}/scheduleTest`)
+      .then(function (response) {
+        console.log('response', response)
+        return response.data;
+      });
+  }
+
   const refresh = (fields, allFields) => {
     console.log('aaa', fields, allFields,)
 
@@ -247,6 +256,9 @@ export function SchduleContract() {
           </Form.List>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button onClick={boot}>
+              监听
+            </Button>
             <Button type="primary" htmlType="submit">
               保存
             </Button>
