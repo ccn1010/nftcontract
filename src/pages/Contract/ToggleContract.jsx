@@ -16,8 +16,8 @@ socket.on('connect', function () {
 });
 
 export function ToggleContract() {
+  const [profileForm] = Form.useForm();
   const [form] = Form.useForm();
-  const formMintEl = useRef(null);
   const formReadEl = useRef(null);
   const formWriteEl = useRef(null);
   const { address } = useParams();
@@ -53,6 +53,7 @@ export function ToggleContract() {
     });
     setReadFnList(readFns);
     setWriteFnList(writeFns);
+    profileForm.setFieldsValue(collection.profile);
     form.setFieldsValue(collection.mintConfig);
 
     setContractPathOption(collection.contractPathList);
@@ -137,6 +138,16 @@ export function ToggleContract() {
       });
   }
 
+  const saveProfile = async (values) => {
+    axios
+      .put(`${process.env.REACT_APP_API_URL}/collections/${address}`, {
+        profile: values
+      })
+      .then(function (response) {
+        return response.data;
+      });
+  }
+
   const saveMint = async (values) => {
     axios
       .put(`${process.env.REACT_APP_API_URL}/collections/${address}`, {
@@ -169,6 +180,7 @@ export function ToggleContract() {
     fetchData();
   }
 
+  // 需要这个吗
   const refresh = (fields, allFields) => {
     const newValue = {};
     fields.forEach(field => {
@@ -192,8 +204,30 @@ export function ToggleContract() {
 
   return (
     <div>
+      <h2>{collection?.contractName}</h2>
       <div>
-        <Form form={form} ref={formMintEl} onFinish={saveMint} onFieldsChange={refresh}>
+        <Form form={profileForm} onFinish={saveProfile}>
+          <Form.Item
+            label="price"
+            name="price"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="owner"
+            name="owner"
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              保存
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <Form form={form} onFinish={saveMint} onFieldsChange={refresh}>
           <Form.Item
             label="读价格"
             name={['priceRead', 'method']}
@@ -380,7 +414,7 @@ export function ToggleContract() {
                       }
                       <Button onClick={handleCall(index)}>Query</Button>
                       <div>=&gt; {item.outputs.map(op => `${op.name} ${op.type}`).join(', ')}</div>
-                      <span>{String(readResult[index])}</span>
+                      <pre>{JSON.stringify(readResult[index], null, 2)}</pre>
                     </div>
                   })
                 }
