@@ -148,15 +148,6 @@ export function ToggleContract() {
       });
   }
 
-  const test = async () => {
-    axios
-      .put(`${process.env.REACT_APP_API_URL}/collections/${address}/toggleTest`)
-      .then(function (response) {
-        console.log('response', response)
-        return response.data;
-      });
-  }
-
   const boot = async () => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/collections/boot`, {
@@ -253,7 +244,7 @@ export function ToggleContract() {
               ))}
             </>)}
           </Form.List>
-          <Form.Item
+          {/* <Form.Item
             label="读公售开关"
             name={['saleActiveRead', 'method']}
           >
@@ -277,7 +268,7 @@ export function ToggleContract() {
                 </Form.Item>
               ))}
             </>)}
-          </Form.List>
+          </Form.List> */}
           <Form.Item
             label="写公售开关"
             name={['saleActiveWrite', 'method']}
