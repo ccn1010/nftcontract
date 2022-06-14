@@ -1,19 +1,27 @@
 import { BrowserRouter,
-  Routes,
+  Routes, Link,
   Route, } from "react-router-dom";
-import { ToggleContract, SchduleContract, Free } from './pages';
+import { ContractList, ToggleContract, SchduleContract, Free, Sniff } from './pages';
 import './App.css';
-import { ContractList } from './pages';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ContractList />} />
+          <Route path="/" element={
+            <ul>
+              <li><Link to="/sniff">SNIFF</Link></li>
+              <li><Link to="/collections">MINT</Link></li>
+              <li><Link to="/free">FREE MINT</Link></li>
+            </ul>
+          }>
+          </Route>
+          <Route path="/collections" element={<ContractList />} />
           <Route path="/toggle/:address" element={<ToggleContract />} />
           <Route path="/schedule/:address" element={<SchduleContract />} />
           <Route path="/free" element={<Free />} />
+          <Route path="/sniff" element={<Sniff />} />
         </Routes>
       </BrowserRouter>
     </div>
