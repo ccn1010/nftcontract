@@ -23,6 +23,19 @@ export function Sniff() {
     setContracts([data, ...contracts])
   });
 
+  const changeStatus = (item) => async (ev)=>{
+    ev.preventDefault();
+    await axios
+      .put(`${process.env.REACT_APP_API_URL}/collections/sniff`, {
+        toggle: item.bootedAt ? false : true,
+        net: item.net,
+      })
+      .then(function (response) {
+        return response.data;
+      });
+    fetchData();
+  }
+
   const toggle = (item) => async (ev)=>{
     ev.preventDefault();
     await axios
@@ -60,6 +73,64 @@ export function Sniff() {
     },
   ];
 
+  const contractColumns = [
+    {
+      title: 'Index',
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record, index) => {
+        return contracts.length - index;
+      }
+    },
+    {
+      title: 'Net',
+      dataIndex: 'net',
+      key: 'net',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, contract) => (
+        <a href={`https://etherscan.io/address/${contract.address}`} target="_blank">{text || '未开源'}</a>
+      ),
+    },
+    {
+      title: 'Marketplace',
+      dataIndex: 'marketplace',
+      render: (text, contract) => (
+        <div>
+          <a href={`https://opensea.io/assets?search[query]=${contract.address}`} target="_blank">op</a>
+          &nbsp;&nbsp;<a href={`https://icy.tools/collections/${contract.address}/overview`} target="_blank">icy</a>
+        </div>
+      ),
+    },
+    {
+      title: 'Verified',
+      dataIndex: 'verified',
+      key: 'verified',
+      render: (text) => (
+        String(text)
+      ),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status, contract) => (
+        status
+      ),
+    },
+    {
+      title: 'createdAt',
+      key: 'createdAt',
+      dataIndex: 'createdAt',
+      render: (text) => {
+        return text && moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss');
+      },
+    },
+  ];
+
   async function fetchData() {
     const data = await axios
       .get(`${process.env.REACT_APP_API_URL}/collections/sniff`)
@@ -77,7 +148,7 @@ export function Sniff() {
     const data = await axios
       .get(`${process.env.REACT_APP_API_URL}/collections/sniff/contracts`, {
         params: {
-          net: Net.MAINNET,
+          net: Net.Mainnet,
         }
       })
       .then(function (response) {
@@ -117,19 +188,7 @@ export function Sniff() {
           </Form.Item>
         </Form>
         <Table rowKey="net" columns={columns} dataSource={data.list} pagination={false} />
-        <List
-          size="small"
-          bordered
-          dataSource={contracts}
-          renderItem={(item, index) => <List.Item>
-            <div className={styles.row}>
-              <div>{contracts.length - index}</div>
-              <div><a href={`https://etherscan.io/address/${item.address}`} target="_blank">ContractAddress</a></div>
-              {/* <div><a href={`https://etherscan.io/tx/${item.transactionHash}`} target="_blank">TransactionHash</a></div> */}
-              <div>{moment(parseInt(item.createdAt)).format('YYYY-MM-DD HH:mm:ss')}</div>
-            </div>
-            </List.Item>}
-        />
+        <Table rowKey="id" columns={contractColumns} dataSource={contracts} pagination={false} />
     </div>
   );
 }
