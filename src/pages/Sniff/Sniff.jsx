@@ -19,9 +19,6 @@ export function Sniff() {
   const [profileForm] = Form.useForm();
   const [contracts, setContracts] = useState([]);
   const [data, setData] = useState([]);
-  socket.on('sniff', (data)=>{
-    setContracts([data, ...contracts])
-  });
 
   const changeStatus = (item) => async (ev)=>{
     ev.preventDefault();
@@ -161,6 +158,14 @@ export function Sniff() {
   useEffect(() => {
     fetchData();
     fetchContracts();
+
+    socket.on('sniff', (data)=>{
+      fetchContracts();
+    });
+  
+    socket.on('sniff-refresh', (data)=>{
+      fetchContracts();
+    });
   }, []);
 
   const saveProfile = async (values) => {
